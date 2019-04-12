@@ -4,7 +4,7 @@
 
 #Prompt -----------------
 
-#Jave Code --------------
+#Java Code --------------
 
 #Assembly Code ----------
 
