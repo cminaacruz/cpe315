@@ -19,6 +19,10 @@ public class exponent {
         /* initialize answer to the user-specified base */
         answer = base;
 
+        if (exponent == 0) {
+            answer = 1;
+        }
+
         for (int i = 1; i < exponent; i++) {
             /* initialize num to answer before each iteration where
                answer will be the previous sum */
