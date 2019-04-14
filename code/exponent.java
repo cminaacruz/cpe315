@@ -38,5 +38,7 @@ public class exponent {
         }
 
         System.out.println("Result: " + answer);
+
+        //Gonzalo: Can we simplify this code to remove 1 for loop?
     }
 }
