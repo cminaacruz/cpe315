@@ -17,9 +17,16 @@ public class reverse {
         cnt = 1;
         out = 0;
 
-        while (cnt) {
+        while(cnt != 0) {
             tmp = 0;
-        }
 
+            tmp = in & mask;
+            if(tmp != 0) {
+                out = cnt | out;
+            }
+            cnt = cnt<<1;
+            mask = mask>>1;
+        }
+        System.out.print("Reversed: " + out + "\n");
     }
 }
