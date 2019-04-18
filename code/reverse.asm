@@ -7,6 +7,37 @@
 
 #Java Code --------------
 
+public class reverse {
+    public static void main(String[] args){
+        reverse();
+    }
+
+    public static void reverse(){
+        int in, mask, tmp, out, cnt;
+
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter a number to reverse: ");
+        in = input.nextInt();
+
+        /* set mask to 32nd (last) bit 1000....0 */
+        mask = 1<<31;
+        cnt = 1;
+        out = 0;
+
+        while(cnt != 0) {
+            tmp = 0;
+
+            tmp = in & mask;
+            if(tmp != 0) {
+                out = cnt | out;
+            }
+            cnt = cnt<<1;
+            mask = mask>>1;
+        }
+        System.out.print("Reversed: " + out + "\n");
+    }
+}
+
 #Assembly Code ----------
 
 
@@ -18,11 +49,8 @@
 #  Data Area (this area contains strings to be displayed during the program)
 .data
 
-welcome:
-	.asciiz " This program adds two numbers \n\n"
-
 prompt:
-	.asciiz " Enter an integer: "
+	.asciiz " Enter a number to reverse: "
 
 sumText: 
 	.asciiz " \n Sum = "
@@ -90,4 +118,3 @@ main:
 	# Exit (load 10 into $v0)
 	ori     $v0, $0, 10
 	syscall
-

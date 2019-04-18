@@ -10,15 +10,15 @@ public class mod{
 		//counter is used during mask calculation
 		//mask is used to find remainder
 
+		mask = 0; //intialized mask
+		counter = 1; //start counter at lowest bit index
+
 		Scanner input = new Scanner(System.in);
         System.out.println("This program performs a mod operation\n");
         System.out.print("Enter a dividend: ");
         dividend = input.nextInt();
         System.out.print("Enter a divisor: ");
         divisor = input.nextInt();
-
-		mask = 0; //intialized mask
-		counter = 1; //start counter at lowest bit index
 
 		//mask    = 0b0000000
 		//counter = 0b0000001
