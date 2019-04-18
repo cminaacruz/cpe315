@@ -30,7 +30,7 @@ public class exponent {
             /* reinitialize tmp to 0 before next iteration in order to
                sum previous "answer" a "base" # of times */
             tmp = 0;
-            for (int j = 0; j < base; j++) {
+           for (int j = 0; j < base; j++) {
                 tmp += num;
             }
             /* store sum from tmp into answer for next iteration */
