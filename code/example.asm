@@ -19,7 +19,7 @@
 0x1001 0000
 welcome:
 	.asciiz " This program adds two numbers \n\n"
- 0x1001 0000 + d34 0x
+
 prompt:
 	.asciiz " Enter an integer: "
 

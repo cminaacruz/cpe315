@@ -1,6 +1,6 @@
 #Name: Gonzalo Arana and Carmina Cruz
 #Section: 1
-#Description: !!!!!FILL IN LATER!!!
+#Description: inputs a dividend and divisor and returns the remainder
 
 #Java Code --------------
 
@@ -48,7 +48,6 @@ welcome:
 div1:
 	.asciiz "Enter a dividend: "
 
-#ASK SENG IF HE WANTS US TO TypE OUT THE MEM LOCATIONS OR USE TAGS
 #this string starts at 0x10010028 + 0d19 = 0x1001003B
 div2:
 	.asciiz "Enter a divisor: "
