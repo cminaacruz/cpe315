@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+  <meta name="ProgId" content="FrontPage.Editor.Document">
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=windows-1252">
+  <title>Lab 2</title>
+</head>
+<body>
+<p><b><font size="4">CPE 315<br>
+Spring 2019<br>
+Seng<br>
+Laboratory #2<br>
+Complete by Friday night 4/26/19 (11:59pm)</font></b></p>
+<p><b>Updates</b>:</p>
+<ul>
+  <li>none
+</ul>
+<p><b>Objectives</b>:</p>
+<ul>
+  <li>To build a MIPS simulator front-end assembler/parser</li>
+</ul>
+<hr style="width: 100%; height: 2px;">
+<ol>
+</ol>
+<p><b>Description</b>:</p>
+<p></p>
+<p>For this lab, you will write a 2-pass assembler in Java.&nbsp; This assembler will load in MIPS assembly files and output
+the corresponding machine code (to the screen). The input to your assembler will be
+MIPS assembly files with comments, labels, and whitespace (spaces and tabs).&nbsp; Assume
+the following regarding the input:
+<br>
+</p>
+<p>1. <span style="font-weight: bold;">Comments</span> - Comments
+start with '#'.&nbsp; A comment will start at the beginning of a line
+or may appear after an instruction (on the same line).&nbsp; If a comment appears after an
+instruction, there may be whitespace before the '#' symbol.<br>
+</p>
+<p>2.&nbsp; <span style="font-weight: bold;">Labels</span> - Labels
+will only contain alphanumeric characters (0-9, a-z, and A-Z).&nbsp;
+There will be no other symbols in the labels.&nbsp; A colon ':' will
+appear after a label.&nbsp; There may be whitespace before a label and the label may be followed by an instruction. A label may appear on a line without an instruction.  <br>
+</p>
+<p>3.&nbsp; Blank lines may contain a mixture of whitespace characters.<br>
+</p>
+<p>4.&nbsp; There may be some whitespace between operands.&nbsp;
+</p>
+<p>5.&nbsp; Immediate values may be negative.<br>
+</p>
+<p>6.&nbsp; Your assembler must support the following instructions:
+&nbsp;and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal.<br>
+</p>
+<p>7.&nbsp;You do NOT need to support the following registers: $at, $k0, $k1, $gp, $fp.<br>
+</p>
+<p>8.&nbsp;On the same line, whitespace may appear between a label and an instruction.  There will always be whitespace between j/jal instructions and the target label.<br>
+</p>
+<p>9.&nbsp;Your program should error check for invalid instructions.&nbsp; This assembler will be used in future lab assignments, so you may wish to create data structures to store the instructions.<br>
+</p>
+<hr style="width: 100%; height: 2px;">
+<p><span style="font-weight: bold;">Implementation:</span><br>
+</p>
+<p>This assembler is called a 2-pass assembler because it takes 2
+passes through the file in order to generate the machine code.&nbsp;
+The first pass should run through all the lines of the file to
+compute the
+address of each label.&nbsp; During the second pass, all the
+instructions are converted to machine code.<br>
+</p>
+<p>For this lab, your assembler will output machine code to the
+screen.&nbsp; In future labs, the machine code will be stored in data
+structures.<br>
+</p>
+<p>Here are some sample files which you can use as test input:&nbsp; <a
+ href="test1.asm">test1.asm</a> <a href="test2.asm">test2.asm</a> <a href="test3.asm">test3.asm</a> <a href="test4.asm">test4.asm</a> <br>
+</p>
+<p>The corresponding output:&nbsp; <a href="test1.output">test1.output</a>
+<a href="test2.output">test2.output</a>
+<a href="test3.output">test3.output</a>
+<a href="test4.output">test4.output</a><br>
+</p>
+<p><span style="font-weight: bold;"></span></p>
+<hr style="width: 100%; height: 2px;"><span style="font-weight: bold;"><br>
+Assignment submission and Grading:</span><br>
+<ul>
+  <li>I will grade this lab using automated scripts to test compilation
+and output correctness (I test with 'diff -w -B').</li>
+  <li>Your lab must
+compile and run on unix1.csc.calpoly.edu.</li>
+  <li>Code which does not compile will receive a score of 0.<br>
+  </li>
+  <li>You must have a Makefile which should compile the lab
+assignment using a 'make lab2' command.&nbsp; Here is a sample <a
+ href="Makefile">Makefile</a></li>
+  <li>Your code should run with the command: <span
+ style="font-weight: bold;">java lab2 file.asm </span> (where file.asm
+is the input file)<br>
+  </li>
+</ul>
+<hr style="width: 100%; height: 2px;">
+<p><b><font size="4">Turning in the assignment<br>
+</font></b></p>
+<p><b><font size="4">&nbsp;&nbsp;&nbsp; </font></b>Handin
+electronically:
+</p>
+<ul>
+  <li>Java source files (do not .zip files)</li>
+  <li>Makefile<br>
+  </li>
+</ul>
+<p><font size="4"><b>&nbsp;&nbsp; </b></font>At the unix
+prompt, type 'handin jseng' to see what assignments I am
+accepting.&nbsp; In order to handin a file for Lab 2, type 'handin
+jseng 315_lab2_x files_to_handin'.&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
