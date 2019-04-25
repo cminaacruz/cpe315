@@ -44,7 +44,7 @@ public class asmParser {
     }
 
     // second pass
-    public static void getInstructions(String file) {
+    public static List<ArrayList<String>> getInstructions(String file) {
         List<ArrayList<String>> instrList = new ArrayList<ArrayList<String>>();
         int count = 1;
 
@@ -56,60 +56,50 @@ public class asmParser {
                 String ln = scanner.nextLine();
                 // split at # for comments
                 String[] result = ln.split("#");
-
-
-                /*used for debugging
-                System.out.println(ln);
-                System.out.print("line " + count + " [");
-                for (String item: result){
-                    System.out.print(item + " | ");
-                }
-                System.out.println("]");
-                //end debugging*/
-
                 // ignores blank lines and filters out labels from asm code
                 if (result.length > 0) {
-                    int lst = result[0].lastIndexOf(':');
-                    if (lst != -1) {
-                        String[] result2 = result[0].split(":");
-                        // splits up each instruction
-                        StringTokenizer tok = new StringTokenizer(result2[1], " ,$");
-                        while (tok.hasMoreTokens()) {
-                            instr.add(tok.nextToken());
-                            //System.out.println(tok.nextToken());
+                    // removes all whitespaces and returns string
+                    if (result[0].trim().length() > 0) {
+                        int lst = result[0].lastIndexOf(':');
+                        // if ':' is detected in line (labels)
+                        if (lst != -1) {
+                            String[] result2 = result[0].split(":");
+                            // splits up each instruction by delimiters
+                            StringTokenizer tok = new StringTokenizer(result2[1], " ,$()\t");
+                            while (tok.hasMoreTokens()) {
+                                instr.add(tok.nextToken());
+                            }
+                            count += 1;
                         }
-                        //System.out.println("line num: " + count);
-                        count += 1;
-                    }
-                    else {
-                        // splits up each instruction
-                        StringTokenizer tok = new StringTokenizer(result[0], " ,$");
-                        while (tok.hasMoreTokens()) {
-                            instr.add(tok.nextToken());
-                            //System.out.println(tok.nextToken());
+                        // lines without labels
+                        else {
+                            // splits up each instruction by delimiters
+                            StringTokenizer tok = new StringTokenizer(result[0], " ,$()\t");
+                            while (tok.hasMoreTokens()) {
+                                instr.add(tok.nextToken());
+                            }
+                            count += 1;
                         }
-                        //System.out.println("line num: " + count);
-                        count += 1;
-                    }
 
-                    instrList.add(instr);
+                        instrList.add(instr);
+                    }
                 }
             }
-
-            // for (ArrayList<String> list: instrList){
-            //     for(String s : list){
-            //         System.out.println(s);
+            // printing out list
+            // int c = 1;
+            // for (ArrayList<String> list: instrList) {
+            //     System.out.print("line" + c + ": ");
+            //     for(String s : list) {
+            //        System.out.println(s);
             //     }
+            //     c++;
             // }
-
-            for(String s : instrList.get(0)){
-               System.out.println(s);
-            }
 
             scanner.close();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }
+        return instrList;
     }
 
     public static Map<String, Integer> getRegisters() {
