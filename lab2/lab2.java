@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class asmParser {
+public class lab2 {
 
     // NOTE: created void functions but can change later to return hashmaps
 
