@@ -56,13 +56,14 @@ public class Instruction {
 
 	public void printBinary(){
 		int tempCode = opCode;
-		int counter = 32;
+		int counter = 32;  //counter used to only print 32 bits
 		while(counter != 0){
-			int bitVal = tempCode&0x80000000;
+			int bitVal = tempCode&0x80000000; //only look at MSB by masking
 			if(bitVal == 0)
 				System.out.print("0");
 			else
 				System.out.print("1");
+
 			tempCode = tempCode<<1;
 
 			if(counter%4 == 0)

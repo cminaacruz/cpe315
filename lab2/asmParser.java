@@ -12,9 +12,7 @@ public class asmParser {
         int instrCount = 1, labelVal;
 
         labels = getLabels(args[0]);
-        System.out.println(labels);
         instrList = getInstructions(args[0]);
-        System.out.println(instrList);
         registers = getRegisters();
 
         //use instruction list to generate binary code
@@ -22,8 +20,6 @@ public class asmParser {
             if(instr.size() != 0){
                 int target = 0;
                 String command = instr.get(0).toString(); //get instruction command
-                //System.out.println("Instr " + instrCount + instr);
-                //System.out.println(instr);
 
                 switch(command){
                     case "and":
@@ -35,11 +31,12 @@ public class asmParser {
                         break;
                     case "or":
                         Instruction or = new Instruction(Instruction.OR_CMD);
-                        or.printBinary();
+                        //or.printBinary();
                         or.setRD(registers.get(instr.get(1).toString()));
                         or.setRS(registers.get(instr.get(2).toString()));
                         or.setRT(registers.get(instr.get(3).toString()));
-                        break;                        
+                        or.printBinary();
+                        break;
                     case "add":
                         Instruction add = new Instruction(Instruction.ADD_CMD);
                         add.setRD(registers.get(instr.get(1).toString()));
@@ -49,9 +46,11 @@ public class asmParser {
                         break;
                     case "addi":
                         Instruction addi = new Instruction(Instruction.ADDI_CMD);
+                        int imm = Integer.parseInt(instr.get(3).toString());
+                        imm &= 0x0000FFFF; //Mask away the upper 16 bits
                         addi.setRT(registers.get(instr.get(1).toString()));
                         addi.setRS(registers.get(instr.get(2).toString()));
-                        addi.setImd(Integer.parseInt(instr.get(3).toString()));
+                        addi.setImd(imm);
                         addi.printBinary();
                         break;
                     case "sll":
@@ -69,6 +68,7 @@ public class asmParser {
                         sub.printBinary();
                         break;
                     case "slt":
+                        //System.out.println(instr);
                         Instruction slt = new Instruction(Instruction.SLT_CMD);
                         slt.setRD(registers.get(instr.get(1).toString()));
                         slt.setRS(registers.get(instr.get(2).toString()));
@@ -77,33 +77,29 @@ public class asmParser {
                         break;
                     case "beq":
                         Instruction beq = new Instruction(Instruction.BEQ_CMD);
-                        target = instrCount - labels.get(instr.get(3).toString());
-                        target ^= 0xFFFFFFFF;
-                        target++;
-                        target &= 0x0000FFFF;
+                        target = (labels.get(instr.get(3).toString())) - (instrCount + 1);
+                        target &= 0x0000FFFF; //Mask away the upper 16 bits
                         beq.setRS(registers.get(instr.get(1).toString()));
                         beq.setRT(registers.get(instr.get(2).toString()));
                         beq.setImd(target);
                         beq.printBinary();
-                        break;                                                                        
+                        break;
                     case "bne":
                         Instruction bne = new Instruction(Instruction.BNE_CMD);
-                        target = instrCount - labels.get(instr.get(3).toString());
-                        target ^= 0xFFFFFFFF;
-                        target++;
-                        target &= 0x0000FFFF;
+                        target = (labels.get(instr.get(3).toString())) - (instrCount + 1);
+                        target &= 0x0000FFFF; //Mask away the upper 16 bits
                         bne.setRS(registers.get(instr.get(1).toString()));
                         bne.setRT(registers.get(instr.get(2).toString()));
                         bne.setImd(target);
                         bne.printBinary();
-                        break; 
+                        break;
                     case "lw":
                         Instruction lw = new Instruction(Instruction.LW_CMD);
                         lw.setRT(registers.get(instr.get(1).toString()));
                         lw.setImd(Integer.parseInt(instr.get(2).toString()));
                         lw.setRS(registers.get(instr.get(3).toString()));
                         lw.printBinary();
-                        break;                                                                        
+                        break;
                     case "sw":
                         Instruction sw = new Instruction(Instruction.SW_CMD);
                         sw.setRT(registers.get(instr.get(1).toString()));
@@ -116,22 +112,21 @@ public class asmParser {
                         labelVal = labels.get(instr.get(1).toString()) - 1;
                         j.setImd(labelVal);
                         j.printBinary();
-                        break;                                                                        
+                        break;
                     case "jr":
                         Instruction jr = new Instruction(Instruction.JR_CMD);
                         jr.setRS(registers.get(instr.get(1).toString()));
                         jr.printBinary();
-                        break;                                                     
+                        break;
                     case "jal":
                         Instruction jal = new Instruction(Instruction.JAL_CMD);
                         labelVal = labels.get(instr.get(1).toString()) - 1;
-                        //System.out.println(instr);
-                        //System.out.println(target);
                         jal.setImd(labelVal);
                         jal.printBinary();
-                        //System.out.println("----");
-                        break;                         
+                        break;
                     default:
+                        System.out.println("invalid instruction: " + instr.get(0).toString());
+                        return;
                 }
             }
             instrCount++;
@@ -166,7 +161,7 @@ public class asmParser {
                                                           ignore lines that only have comments)*/
 
                 //if the line wasn't empty and wasn't only occupied by comments
-                if(splitString.length > 0 && secondTrim.length() > 0){ 
+                if(splitString.length > 0 && secondTrim.length() > 0){
                     int lst = splitString[0].lastIndexOf(':');
                     // if : detected, add label name + line number to map
                     if (lst != -1) {
@@ -195,6 +190,7 @@ public class asmParser {
             while (scanner.hasNextLine()) {
                 ArrayList<String> instr = new ArrayList<String>();
                 String ln = scanner.nextLine();
+
                 // split at # for comments
                 String[] result = ln.split("#");
                 // ignores blank lines and filters out labels from asm code
@@ -226,23 +222,14 @@ public class asmParser {
                     }
                 }
             }
-
-            //printing out list (Debug)
-            //int c = 1;
-            //System.out.print(instrList);
-            //for (ArrayList<String> list: instrList) {
-                //System.out.print("line" + c + ": ");
-                //System.out.println(list);
-                //for(String s : list) {
-                //   System.out.println(s);
-                //}
-                //c++;
-            //}
-
             scanner.close();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }
+
+        //remove empty instructions
+        instrList.removeAll(Collections.singleton(new ArrayList<>()));
+
         return instrList;
     }
 
