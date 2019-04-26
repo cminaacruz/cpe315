@@ -1,0 +1,9 @@
+java asmParser input/test1.asm > output/test1.result
+java asmParser input/test2.asm > output/test2.result
+java asmParser input/test3.asm > output/test3.result
+java asmParser input/test4.asm > output/test4.result
+
+diff -w -B test1.output test1.result 
+diff -w -B test2.output test2.result 
+diff -w -B test3.output test3.result 
+diff -w -B test4.output test4.result 

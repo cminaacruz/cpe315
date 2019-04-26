@@ -9,10 +9,12 @@ public class asmParser {
         Map<String, Integer> labels;
         Map<String, Integer> registers;
         List<ArrayList<String>> instrList;
-        int instrCount = 1;
+        int instrCount = 1, labelVal;
 
         labels = getLabels(args[0]);
+        System.out.println(labels);
         instrList = getInstructions(args[0]);
+        System.out.println(instrList);
         registers = getRegisters();
 
         //use instruction list to generate binary code
@@ -111,7 +113,8 @@ public class asmParser {
                         break;
                     case "j":
                         Instruction j = new Instruction(Instruction.J_CMD);
-                        j.setImd(labels.get(instr.get(1).toString()));
+                        labelVal = labels.get(instr.get(1).toString()) - 1;
+                        j.setImd(labelVal);
                         j.printBinary();
                         break;                                                                        
                     case "jr":
@@ -121,10 +124,12 @@ public class asmParser {
                         break;                                                     
                     case "jal":
                         Instruction jal = new Instruction(Instruction.JAL_CMD);
-                        System.out.println(instr);
-                        System.out.println(target);
-                        jal.setImd(labels.get(instr.get(1).toString()));
+                        labelVal = labels.get(instr.get(1).toString()) - 1;
+                        //System.out.println(instr);
+                        //System.out.println(target);
+                        jal.setImd(labelVal);
                         jal.printBinary();
+                        //System.out.println("----");
                         break;                         
                     default:
                 }
