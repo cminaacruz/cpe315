@@ -76,6 +76,9 @@ public class asmParser {
                     case "beq":
                         Instruction beq = new Instruction(Instruction.BEQ_CMD);
                         target = instrCount - labels.get(instr.get(3).toString());
+                        target ^= 0xFFFFFFFF;
+                        target++;
+                        target &= 0x0000FFFF;
                         beq.setRS(registers.get(instr.get(1).toString()));
                         beq.setRT(registers.get(instr.get(2).toString()));
                         beq.setImd(target);
@@ -84,6 +87,9 @@ public class asmParser {
                     case "bne":
                         Instruction bne = new Instruction(Instruction.BNE_CMD);
                         target = instrCount - labels.get(instr.get(3).toString());
+                        target ^= 0xFFFFFFFF;
+                        target++;
+                        target &= 0x0000FFFF;
                         bne.setRS(registers.get(instr.get(1).toString()));
                         bne.setRT(registers.get(instr.get(2).toString()));
                         bne.setImd(target);
@@ -115,6 +121,8 @@ public class asmParser {
                         break;                                                     
                     case "jal":
                         Instruction jal = new Instruction(Instruction.JAL_CMD);
+                        System.out.println(instr);
+                        System.out.println(target);
                         jal.setImd(labels.get(instr.get(1).toString()));
                         jal.printBinary();
                         break;                         
