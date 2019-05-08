@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 /*
 	Authors     : Gonzalo Arana, Carmina Cruz
 	File        : Lab3.java
@@ -7,13 +8,19 @@ import java.util.*;
 
 public class lab3 {
 
+	static Map<String, Integer> registers = setRegisters();
+	static int[] dataMemory = setDataMemory();
+	static Map<String, Integer> labels;
+	static int progCount = 1;
+	static List<ArrayList<String>> instrList;	
+
 	public static void main(String args[]){
 
 		Commands cmd = new Commands();
-
-		Map<String, Integer> registers = setRegisters();
-		int[] dataMemory = setDataMemory();
 		boolean exitFlag = true;
+
+		labels = getLabels(args[0]);
+		instrList = getInstructions(args[0]);
 
 		// NOTE: testing stuff
 		// for (int m = 0; m < 10; m++) {
@@ -42,7 +49,10 @@ public class lab3 {
 						cmd.dump(registers);
 						break;
 					case "s":
-						cmd.step(inpArr[1]);
+						if(inpArr.length > 1)
+							cmd.step(inpArr[1]);
+						else
+							cmd.step("1");
 						break;
 					case "r":
 						// NOTE: implementation of run()
@@ -99,4 +109,102 @@ public class lab3 {
 		}
 		return dataMem;
 	}
+
+    public static Map<String, Integer> getLabels(String file) {
+	    // create label HashMap
+	    HashMap<String, Integer> labels = new HashMap<>();
+
+	    try {
+	        // counter for line number
+	        int lnNum = 1;
+	        Scanner scanner = new Scanner(new File(file));
+
+	        // while loop to grab next line in file
+	        while (scanner.hasNextLine()) {
+	            String secondTrim = "";
+	            String[] splitString;
+	            String ln = scanner.nextLine();
+
+	            //trim leading and trailing spaces
+	            String trimString = ln.trim();
+
+	            //split at # for comments
+	            splitString = trimString.split("#");
+
+	            //Only want to look at everything before the comments
+	            if(splitString.length > 0)
+	                secondTrim = splitString[0].trim(); /*remove spaces before # (used to
+	                                                      ignore lines that only have comments)*/
+
+	            //if the line wasn't empty and wasn't only occupied by comments
+	            if(splitString.length > 0 && secondTrim.length() > 0){
+	                int lst = splitString[0].lastIndexOf(':');
+	                // if : detected, add label name + line number to map
+	                if (lst != -1) {
+	                    String[] result = ln.split(":");
+	                    result[0] = result[0].replaceAll("^\\s+",""); //trim leading spaces
+	                    labels.put(result[0], lnNum);
+	                }
+	                lnNum += 1;
+	            }
+	        }
+	        scanner.close();
+	    } catch (FileNotFoundException ex) {
+	        ex.printStackTrace();
+	    }
+	    return labels;
+    } 
+
+    public static List<ArrayList<String>> getInstructions(String file) {
+        List<ArrayList<String>> instrList = new ArrayList<ArrayList<String>>();
+        int count = 1;
+
+        try {
+            Scanner scanner = new Scanner(new File(file));
+
+            while (scanner.hasNextLine()) {
+                ArrayList<String> instr = new ArrayList<String>();
+                String ln = scanner.nextLine();
+
+                // split at # for comments
+                String[] result = ln.split("#");
+                // ignores blank lines and filters out labels from asm code
+                if (result.length > 0) {
+                    // removes all whitespaces and returns string
+                    if (result[0].trim().length() > 0) {
+                        int lst = result[0].lastIndexOf(':');
+                        // if ':' is detected in line (labels)
+                        if (lst != -1) {
+                            String[] result2 = result[0].split(":");
+                            // splits up each instruction by delimiters
+                            StringTokenizer tok = new StringTokenizer(result2[1], " ,$()\t");
+                            while (tok.hasMoreTokens()) {
+                                instr.add(tok.nextToken());
+                            }
+                            count += 1;
+                        }
+                        // lines without labels
+                        else {
+                            // splits up each instruction by delimiters
+                            StringTokenizer tok = new StringTokenizer(result[0], " ,$()\t");
+                            while (tok.hasMoreTokens()) {
+                                instr.add(tok.nextToken());
+                            }
+                            count += 1;
+                        }
+
+                        instrList.add(instr);
+                    }
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        //remove empty instructions
+        instrList.removeAll(Collections.singleton(new ArrayList<>()));
+
+        return instrList;
+    }
 }
