@@ -11,8 +11,8 @@ public class lab3 {
 	static Map<String, Integer> registers = setRegisters();
 	static int[] dataMemory = setDataMemory();
 	static Map<String, Integer> labels;
-	static int progCount = 1;
-	static List<ArrayList<String>> instrList;
+	static int progCount = 0;
+	static List<ArrayList<String>> instrList;	
 
 	public static void main(String args[]){
 
@@ -55,13 +55,10 @@ public class lab3 {
 							cmd.step("1");
 						break;
 					case "r":
-						String runCmd = ((Integer)instrList.size()).toString();
-						System.out.println(runCmd);
-						//cmd.step(runCmd);
+						cmd.run();
 						break;
 					case "m":
-						cmd.displayDataMem(Integer.parseInt(inpArr[1]),
-											Integer.parseInt(inpArr[2]));
+						cmd.displayDataMem(Integer.parseInt(inpArr[1]), Integer.parseInt(inpArr[2]));
 						break;
 					case "c":
 						cmd.clear(registers, dataMemory);
@@ -156,7 +153,7 @@ public class lab3 {
 	        ex.printStackTrace();
 	    }
 	    return labels;
-    }
+    } 
 
     public static List<ArrayList<String>> getInstructions(String file) {
         List<ArrayList<String>> instrList = new ArrayList<ArrayList<String>>();
