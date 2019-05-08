@@ -12,27 +12,16 @@ public class lab3 {
 	static int[] dataMemory = setDataMemory();
 	static Map<String, Integer> labels;
 	static int progCount = 0;
-	static List<ArrayList<String>> instrList;	
+	static List<ArrayList<String>> instrList;
 
 	public static void main(String args[]){
-
-		Commands cmd = new Commands();
 		boolean exitFlag = true;
 
 		labels = getLabels(args[0]);
 		instrList = getInstructions(args[0]);
 
-		// NOTE: testing stuff
-		// for (int m = 0; m < 10; m++) {
-		// 	dataMemory[m] = m;
-		// 	System.out.println(dataMemory[m]);
-		// }
-		//
-		// registers.put("a0", 4);
-		// registers.put("t5", 4);
-
 		// interactive mode
-		if (args.length < 3) {
+		if (args.length < 2) {
 			while (exitFlag) {
 				Scanner scan = userInput();
 				String input = scan.nextLine();
@@ -40,40 +29,87 @@ public class lab3 {
 				// splits user input into array of substrings
 				String[] inpArr = input.split(" ");
 
-				//check the zero index for the type of command
-				switch(inpArr[0]){
-					case "h":
-						cmd.help();
-						break;
-					case "d":
-						cmd.dump(registers);
-						break;
-					case "s":
-						if(inpArr.length > 1)
-							cmd.step(inpArr[1]);
-						else
-							cmd.step("1");
-						break;
-					case "r":
-						cmd.run();
-						break;
-					case "m":
-						cmd.displayDataMem(Integer.parseInt(inpArr[1]), Integer.parseInt(inpArr[2]));
-						break;
-					case "c":
-						cmd.clear(registers, dataMemory);
-						break;
-					case "q":
-						exitFlag = false;
-						break;
-					default:
-						System.out.println("Invalid Command");
-						break;
-				}
+				exitFlag = cmdExec(inpArr, exitFlag);
 			}
 
 		}
 		// script mode
+		else {
+		    Scanner buffer;
+		    List<String> script = new ArrayList<String>();
+
+		    try {
+		        // read lines of script into list
+		        buffer = new Scanner(new File(args[1]));
+
+		        while(buffer.hasNext()) {
+		            script.add(buffer.nextLine());
+		        }
+
+		    } catch (FileNotFoundException e) {
+		        System.out.println("FILE NOT FOUND: " + args[1]);
+		    }
+
+		    String[] scriptCmds = new String[script.size()];
+
+		    // convert string list to array
+		    //scriptCmds = new String[script.size()];
+		    for (int i = 0; i < script.size(); i++) {
+		        scriptCmds[i] = script.get(i);
+		    }
+		    // go through commands
+		    String[] sCmd = new String[scriptCmds.length];
+		    for (int i = 0; i < scriptCmds.length; i++) {
+		        sCmd = scriptCmds[i].split(" ");
+				if (sCmd.length > 1) {
+					System.out.print("mips> " + sCmd[0]);
+					for (int l = 1; l < sCmd.length; l++) {
+						System.out.print(" " + sCmd[l]);
+					}
+					System.out.println();
+				}
+				else {
+					System.out.println("mips> " + sCmd[0]);
+				}
+		        cmdExec(sCmd, exitFlag);
+		    }
+		}
+	}
+
+	public static boolean cmdExec(String[] inpArr, boolean exit) {
+		Commands cmd = new Commands();
+
+		//check the zero index for the type of command
+		switch(inpArr[0]){
+			case "h":
+				cmd.help();
+				break;
+			case "d":
+				cmd.dump(registers);
+				break;
+			case "s":
+				if(inpArr.length > 1)
+					cmd.step(inpArr[1]);
+				else
+					cmd.step("1");
+				break;
+			case "r":
+				cmd.run();
+				break;
+			case "m":
+				cmd.displayDataMem(Integer.parseInt(inpArr[1]), Integer.parseInt(inpArr[2]));
+				break;
+			case "c":
+				cmd.clear(registers, dataMemory);
+				break;
+			case "q":
+				exit = false;
+				break;
+			default:
+				System.out.println("Invalid Command");
+				break;
+		}
+		return exit;
 	}
 
 	public static Scanner userInput() {
@@ -153,7 +189,7 @@ public class lab3 {
 	        ex.printStackTrace();
 	    }
 	    return labels;
-    } 
+    }
 
     public static List<ArrayList<String>> getInstructions(String file) {
         List<ArrayList<String>> instrList = new ArrayList<ArrayList<String>>();
