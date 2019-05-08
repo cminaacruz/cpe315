@@ -44,11 +44,19 @@ public class Commands {
     }
 
     public void step(String numSteps) {
-        ArrayList<String> currInstruct;
-        for (int i = 0; i < Integer.parseInt(numSteps); i++){
+        ArrayList<String> currInstruct = new ArrayList<String>();
+        for (int i = 0; i < Integer.parseInt(numSteps); i++) {
             currInstruct = lab3.instrList.get(lab3.progCount);
             execInstruction(currInstruct);
         }
+    }
+
+    public static void displayDataMem(int startIdx, int endIdx) {
+        System.out.println();
+        for (int idx = startIdx; idx <= endIdx; idx++) {
+            System.out.println("[" + idx + "] = " + lab3.dataMemory[idx]);
+        }
+        System.out.println();
     }
 
     public static void clear(Map<String, Integer> registers, int[] dataMemory) {
@@ -63,209 +71,194 @@ public class Commands {
 		}
     }
 
-    public static void execInstruction(ArrayList<String> instr){
+    public static void execInstruction(ArrayList<String> instr) {
         //static Map<String, Integer> lab3.registers = setlab3.registers();
         //static int[] lab3.dataMemory = setlab3.dataMemory();
         //static programCount = 1;
         System.out.println("Current Instruction: " + instr);
 
-        //used to save values from instuction
-        boolean increment = true;  //flag for whether or not to increment PC
-        String rd, rs, rt;         //String values for register
-        int rd_val,rs_val, rt_val; //decimal value for register
+        // used to save values from instuction
+        boolean increment = true;       // flag for whether or not to increment PC
+        String rd, rs, rt;              // String values for register
+        int rd_val,rs_val, rt_val;      // decimal value for register
         int immed, h, target;
-        String command = instr.get(0); //get the operation we are trying to run
+        String command = instr.get(0);  // get the operation we are trying to run
         switch(command){
             case "and":
-                //save register values from instruction
+                // save register values from instruction
                 rd = instr.get(1).toString();
                 rs = instr.get(2).toString();
                 rt = instr.get(3).toString();
 
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
 
-                //perform AND ($s & $t) operation
+                // perform AND ($s & $t) operation
                 rd_val = rs_val & rt_val;
 
-                //store result into rd register
+                // store result into rd register
                 lab3.registers.put(rd, rd_val);
                 break;
             case "or":
-                //save register values from instruction
+                // save register values from instruction
                 rd = instr.get(1).toString();
                 rs = instr.get(2).toString();
                 rt = instr.get(3).toString();
 
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
 
-                //perform OR ($s | $t) operation
+                // perform OR ($s | $t) operation
                 rd_val = rs_val | rt_val;
 
-                //store result into rd register
+                // store result into rd register
                 lab3.registers.put(rd, rd_val);
                 break;
-            case "add":
-                //save register values from instruction
+            case "add": // save register values from instruction
                 rd = instr.get(1).toString();
                 rs = instr.get(2).toString();
                 rt = instr.get(3).toString();
 
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
 
-                //perform ADD ($s + $t) operation
+                // perform ADD ($s + $t) operation
                 rd_val = rs_val + rt_val;
 
-                //store result into rd register
+                // store result into rd register
                 lab3.registers.put(rd, rd_val);
                 break;
-            case "addi":
-                //save register values from instruction
+            case "addi": // save register values from instruction
                 rt = instr.get(1).toString();
                 rs = instr.get(2).toString();
                 immed = Integer.parseInt(instr.get(3).toString());
                 immed &= 0x0000FFFF; //Mask away the upper 16 bits
 
-                //load register values from hashmap
-                rs_val = lab3.registers.get(rs);
-                //perform ADDI ($s + immed) operation
-                rt_val = rs_val + immed;
-                //store result into rt register
-                lab3.registers.put(rt, rt_val);
+                rs_val = lab3.registers.get(rs);    // load register values from hashmap
+                rt_val = rs_val + immed;            // perform ADDI ($s + immed) operation
+                lab3.registers.put(rt, rt_val);     // store result into rt register
                 break;
-            case "sll":
-                //save register values from instruction
+            case "sll": // save register values from instruction
                 rd = instr.get(1).toString();
                 rt = instr.get(2).toString();
                 h = Integer.parseInt(instr.get(3).toString());
-                //load register values from hashmap
+                // load register values from hashmap
                 rt_val = lab3.registers.get(rt);
-                //perform SLL ($t << h) operation
+                // perform SLL ($t << h) operation
                 rd_val = rt_val << h;
-                //store result into rd register
+                // store result into rd register
                 lab3.registers.put(rd, rd_val);
                 break;
-            case "sub":
-                //save register values from instruction
+            case "sub": // save register values from instruction
                 rd = instr.get(1).toString();
                 rs = instr.get(2).toString();
                 rt = instr.get(3).toString();
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
-                //perform SUB($s - $t) operation
+                // perform SUB($s - $t) operation
                 rd_val = rs_val - rt_val;
-                //store result into rd register
+                // store result into rd register
                 lab3.registers.put(rd, rd_val);
                 break;
-            case "slt":
-                //save register values from instruction
+            case "slt": // save register values from instruction
                 rd = instr.get(1).toString();
                 rs = instr.get(2).toString();
                 rt = instr.get(3).toString();
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
-                rd_val = 0; //assume $s>$t, Rd = 0
-                //perform SLT ($s < $t) operation
+                rd_val = 0; // assume $s>$t, Rd = 0
+                // perform SLT ($s < $t) operation
                 if(rs_val < rt_val)
                     rd_val = 1;
-                //store result into rd (1 if $s<$t, 0 if $s>$t) register
+                // store result into rd (1 if $s<$t, 0 if $s>$t) register
                 lab3.registers.put(rd, rd_val);
                 break;
-            case "beq":
-                //save register values from instruction
+            case "beq": // save register values from instruction
                 rs = instr.get(1).toString();
                 rt = instr.get(2).toString();
                 immed = lab3.labels.get(instr.get(3).toString());
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
-                //perform BEQ: if $s == $t
+                // perform BEQ: if $s == $t
                 if(rs_val == rt_val){
-                    //calculate target
+                    // calculate target
                     target = immed - (lab3.progCount + 1); //NOTE Need to make static variable lab3.progCount
-                    target &= 0x0000FFFF; //Mask away the upper 16 bits
-                    lab3.progCount = target;//jump to target
+                    //target &= 0x0000FFFF; // Mask away the upper 16 bits
+                    lab3.progCount += target;// jump to target
                     increment = false;
                 }
                 break;
-            case "bne":
-                //save register values from instruction
+            case "bne": // save register values from instruction
                 rs = instr.get(1).toString();
                 rt = instr.get(2).toString();
                 immed = lab3.labels.get(instr.get(3).toString());
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
                 rt_val = lab3.registers.get(rt);
-                //perform BEQ: if $s != $t
+                // perform BEQ: if $s != $t
                 if(rs_val != rt_val){
-                    //calculate target
+                    // calculate target
                     target = immed - (lab3.progCount + 1); //NOTE Need to make static variable lab3.progCount
-                    target &= 0x0000FFFF; //Mask away the upper 16 bits
-                    //Note might need to get rid of mask
-                    lab3.progCount = target;//jump to target
+                    //target &= 0x0000FFFF; // Mask away the upper 16 bits
+                    // Note might need to get rid of mask
+                    lab3.progCount += target;// jump to target
                     increment = false;
                 }
                 break;
-            case "lw":
-                //save register values from instruction
+            case "lw": //save register values from instruction
                 rt = instr.get(1).toString();
                 immed = Integer.parseInt(instr.get(2).toString());
                 rs = instr.get(3).toString();
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
-                //load value from memory MEM[$s + immed]
+                // load value from memory MEM[$s + immed]
                 rt_val = lab3.dataMemory[rs_val + (immed >> 2)];
-                //store value into $t
+                // store value into $t
                 lab3.registers.put(rt, rt_val);
                 break;
-            case "sw":
-                //save register values from instruction
+            case "sw": // save register values from instruction
                 rt = instr.get(1).toString();
                 immed = Integer.parseInt(instr.get(2).toString());
                 rs = instr.get(3).toString();
-                //load register values from hashmap
+                // load register values from hashmap
                 rt_val = lab3.registers.get(rt);
                 rs_val = lab3.registers.get(rs);
-                //store $t value into memory MEM[$s + immed]
-                lab3.dataMemory[rs_val + (immed >> 2)] = rt_val;   
+                // store $t value into memory MEM[$s + immed]
+                lab3.dataMemory[rs_val + (immed >> 2)] = rt_val;
                 break;
-            case "j":
-                //load jump target value from hashmap
+            case "j": // load jump target value from hashmap
                 target = lab3.labels.get(instr.get(1).toString()) - 1;
-                //jump to target
+                // jump to target
                 lab3.progCount = target;
                 increment = false;
                 break;
-            case "jr":
-                //save register value from instruction
+            case "jr": // save register value from instruction
                 rs = instr.get(1).toString();
-                //load register values from hashmap
+                // load register values from hashmap
                 rs_val = lab3.registers.get(rs);
-                //jump to value from register
+                // jump to value from register
                 lab3.progCount = rs_val;
                 increment = false;
                 break;
-            case "jal":
-                //load jump target value from hashmap
+            case "jal": // load jump target value from hashmap
                 target = lab3.labels.get(instr.get(1).toString()) - 1;
-                //store current PC value into $ra in hashmap
+                // store current PC value into $ra in hashmap
                 lab3.registers.put("ra", lab3.progCount);
-                //jump to target
+                // jump to target
                 lab3.progCount = target;
                 increment = false;
                 break;
             default:
                 System.out.println("invalid instruction: " + instr.get(0).toString());
                 return;
-        } 
+        }
         if(increment)
-            lab3.progCount++;      
+            lab3.progCount++;
     }
 }
