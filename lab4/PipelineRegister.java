@@ -13,11 +13,12 @@ public class PipelineRegister {
     private int target;			//used for jump instrs
     private int offset;			//used branch and load/store instrs
 
-    // dummy constructor
+    // constructor used to start pipeline registers as "empty"
     public PipelineRegister(String instrName) {
     	this.instrName = instrName;
     }
 
+    //Getter code for variables ------------------
     public String getInstrName(){
     	return instrName;
     }
@@ -43,13 +44,14 @@ public class PipelineRegister {
     }
 
     public int getTarget(){
-    	return rt;
+    	return target;
     }
 
     public int getOffset(){
     	return offset;
     }
 
+    //Setter code for variables-------------------
     public void setInstrName(String instrName){
     	this.instrName = instrName;
     }
@@ -75,7 +77,7 @@ public class PipelineRegister {
     }
 
     public void setTarget(int target){
-    	this.rt = rt;
+    	this.target = target;
     }
 
     public void setOffset(int offset){

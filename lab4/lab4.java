@@ -15,6 +15,7 @@ public class lab4 {
 	static List<ArrayList<String>> instrList;
 
 	public static void main(String args[]){
+		Pipeline pipeline = new Pipeline(); //initialize pipeline
 		boolean exitFlag = true;
 
 		labels = getLabels(args[0]);
@@ -29,7 +30,7 @@ public class lab4 {
 				// splits user input into array of substrings
 				String[] inpArr = input.split(" ");
 
-				exitFlag = cmdExec(inpArr, exitFlag);
+				exitFlag = cmdExec(inpArr, exitFlag, pipeline);
 			}
 
 		}
@@ -71,12 +72,12 @@ public class lab4 {
 				else {
 					System.out.println("mips> " + sCmd[0]);
 				}
-		        cmdExec(sCmd, exitFlag);
+		        cmdExec(sCmd, exitFlag, pipeline);
 		    }
 		}
 	}
 
-	public static boolean cmdExec(String[] inpArr, boolean exit) {
+	public static boolean cmdExec(String[] inpArr, boolean exit, Pipeline pipeline) {
 		Commands cmd = new Commands();
 
 		//check the zero index for the type of command
@@ -87,6 +88,9 @@ public class lab4 {
 			case "d":
 				cmd.dump(registers);
 				break;
+			case "p":
+				pipeline.printPipeRegs();
+				break;				
 			case "s":
 				if(inpArr.length > 1)
 					cmd.step(inpArr[1]);
