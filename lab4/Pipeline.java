@@ -67,17 +67,6 @@ public class Pipeline {
         //use for debugging
         System.out.println(currInstr);
 
-        //only run valid instructions that aren't beq and bne
-        //need to try running beq and bne instructions later on (in execute?)
-        if(!currInstr.equals("empty") && !currInstr.equals("squash")
-            && !currInstr.equals("beq") && !currInstr.equals("bne")){
-            cmd.execInstruction(id_exe.getInstr()); //run instruction
-            System.out.println(id_exe.getInstr());  //print the instruction that was run
-        } else
-        {
-            System.out.println("instruction not run.");
-        }
-
         //If we just ran a jump, squash the if_id register
         if(currInstr.equals("jal") || currInstr.equals("jr") 
             || currInstr.equals("j")){
@@ -95,13 +84,29 @@ public class Pipeline {
         // check PC for line number to grab that instruction
         // grab instruction from List
         // update pipeline output
+        // Also runs NON-Branch and NON-jump instructions
+        // Increments PC unless a branch, jump, or stall has just gone off
 
         ArrayList<String> currInstruct = lab4.instrList.get(lab4.progCount);
+        String currInstrName = currInstruct.get(0);
 
         //place instrName and Instr into the pipleine
-        if_id.setInstrName(currInstruct.get(0)); //put InstrName to if_id
+        if_id.setInstrName(currInstrName); //put InstrName to if_id
         if_id.setInstr(currInstruct);  //put Instr to if_id
 
+        //only run valid instructions that aren't branches or jumps
+        //need to try running beq and bne instructions later on (in execute?)
+        if(!currInstrName.equals("jal") && !currInstrName.equals("j") && !currInstrName.equals("jr")
+            && !currInstrName.equals("beq") && !currInstrName.equals("bne")){
+            cmd.execInstruction(currInstruct); //run instruction
+            System.out.println(currInstruct);  //print the instruction that was run
+        } else //if we hit a jump or branch
+        {
+            System.out.println("instruction not run.");
+        }
+
+        if(lab4.incrementPC) //global flag checking if PC should be incremented
+            lab4.progCount++;
         //return currInstruct;
     }
 

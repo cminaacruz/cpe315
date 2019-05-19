@@ -11,10 +11,12 @@ public class lab4 {
 	static Map<String, Integer> registers = setRegisters();
 	static int[] dataMemory = setDataMemory();
 	static Map<String, Integer> labels;
+	static boolean incrementPC = true; //global flag used to tell when to increment PC
 	static int progCount = 0;
 	static List<ArrayList<String>> instrList;
 	//String cmd;
     static Pipeline pipe = new Pipeline();
+
 
 	public static void main(String args[]){
 		Pipeline pipeline = new Pipeline(); //initialize pipeline

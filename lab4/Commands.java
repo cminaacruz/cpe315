@@ -98,7 +98,7 @@ public class Commands {
     public static void execInstruction(ArrayList<String> instr){
 
         //used to save values from instuction
-        boolean increment = true;  //flag for whether or not to increment PC
+        //boolean increment = true;  //flag for whether or not to increment PC
         String rd, rs, rt;         //String values for register
         int rd_val,rs_val, rt_val; //decimal value for register
         int immed, h, target, offset;
@@ -219,7 +219,7 @@ public class Commands {
                     //calculate target
                     offset = immed - (lab4.progCount + 1); //NOTE Need to make static variable lab4.progCount
                     lab4.progCount += offset;//jump to target
-                    increment = false;
+                    //increment = false;
                 }
                 break;
             case "bne":
@@ -235,7 +235,7 @@ public class Commands {
                     //calculate target
                     offset = immed - (lab4.progCount + 1); //NOTE Need to make static variable lab4.progCount
                     lab4.progCount += offset;//jump to target
-                    increment = false;
+                    //increment = false;
                 }
                 break;
             case "lw":
@@ -266,7 +266,7 @@ public class Commands {
                 target = lab4.labels.get(instr.get(1).toString()) - 1;
                 //jump to target
                 lab4.progCount = target;
-                increment = false;
+                //increment = false;
                 break;
             case "jr":
                 //save register value from instruction
@@ -275,7 +275,7 @@ public class Commands {
                 rs_val = regGet(rs);
                 //jump to value from register
                 lab4.progCount = rs_val;
-                increment = false;
+                //increment = false;
                 break;
             case "jal":
                 //load jump target value from hashmap
@@ -284,14 +284,14 @@ public class Commands {
                 regPut("ra", lab4.progCount + 1);
                 //jump to target
                 lab4.progCount = target;
-                increment = false;
+                ////increment = false;
                 break;
             default:
                 System.out.println("invalid instruction: " + instr.get(0).toString());
                 return;
         }
-        if(increment)
-            lab4.progCount++;
+        //if(increment)
+        //    lab4.progCount++;
     }
 
     public static void regPut(String dest, int value){
