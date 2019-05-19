@@ -3,7 +3,8 @@ import java.util.ArrayList;
 
 public class Commands {
 
-    String cmd;
+    //String cmd;
+    Pipeline pipe = new Pipeline();
 
     // dummy constructor
     public Commands() {}
@@ -11,9 +12,10 @@ public class Commands {
     public void help() {
         System.out.println("\nh = show help");
         System.out.println("d = dump register state");
-        System.out.println("s = single step through the program (i.e. execute 1 instruction and stop)");
-        System.out.println("s num = step through num instructions of the program");
-        System.out.println("r = run until the program ends");
+        System.out.println("p = show pipeline registers");
+        System.out.println("s = step through a single clock cycle step (i.e. simulate 1 cycle and stop)");
+        System.out.println("s num = step through num clock cycles");
+        System.out.println("r = run until the program ends and display timing summary");
         System.out.println("m num1 num2 = display data memory from location num1 to num2");
         System.out.println("c = clear all registers, memory, and the program counter to 0");
         System.out.println("q = exit the program\n");
@@ -50,18 +52,24 @@ public class Commands {
             execInstruction(currInstruct);
         }
     }
+
     public void step(String numSteps) {
+        //pipe.simulate_cpu_cycle(numSteps);
         int stepCnt;
         boolean executed = false;
         int steps = Integer.parseInt(numSteps);
-        ArrayList<String> currInstruct;
+
+        //ArrayList<String> currInstruct;
         for (stepCnt = 0; stepCnt < steps && lab4.progCount != lab4.instrList.size(); stepCnt++){
             executed = true;
-            currInstruct = lab4.instrList.get(lab4.progCount);
-            execInstruction(currInstruct);
+            //currInstruct = lab4.instrList.get(lab4.progCount);
+            //execInstruction(currInstruct);
+            pipe.simulate_cpu_cycle();
         }
+
         if(executed)
             System.out.println("\t" + stepCnt + " instruction(s) executed");
+            //lab4.progCount++;
     }
 
     public static void displayDataMem(int startIdx, int endIdx){

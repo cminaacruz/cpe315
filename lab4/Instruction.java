@@ -30,25 +30,24 @@ public class Instruction {
 		opCode |= regS<<21;
 	}
 
-	public void setRT(int regT){
-		//shift by 16 bits and or
-		opCode |= regT<<16;
-	}
-
-	public void setRD(int regD){
-		//shift by 11 bits and or
-		opCode |= regD<<11;
-	}
-
-	public void setH(int h){
-		//shift by 6 bits and or
-		opCode |= h<<6;
-	}
-
-	public void setImd(int imd){
-		//just or
-		opCode |= imd;
-	}
+	// public void setRT(int regT){
+	// 	//shift by 16 bits and or
+	// 	opCode |= regT<<16;
+	//
+	// public void setRD(int regD){
+	// 	//shift by 11 bits and or
+	// 	opCode |= regD<<11;
+	// }
+	//
+	// public void setH(int h){
+	// 	//shift by 6 bits and or
+	// 	opCode |= h<<6;
+	// }
+	//
+	// public void setImd(int imd){
+	// 	//just or
+	// 	opCode |= imd;
+	// }
 
 	public void printBinary(){
 		int tempCode = opCode;

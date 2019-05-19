@@ -84,4 +84,9 @@ public class PipelineRegister {
     	this.offset = offset;
     }
 
+    // needed to be able to print PipelineRegister to string
+    public String toString() {
+        return (instrName + " ");
+    }
+
 }

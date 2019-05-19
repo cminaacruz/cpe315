@@ -90,12 +90,13 @@ public class lab4 {
 				break;
 			case "p":
 				pipeline.printPipeRegs();
-				break;				
+				break;
 			case "s":
 				if(inpArr.length > 1)
 					cmd.step(inpArr[1]);
 				else
 					cmd.step("1");
+				//pipeline.printPipeRegs();
 				break;
 			case "r":
 				cmd.run();
