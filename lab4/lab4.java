@@ -13,6 +13,8 @@ public class lab4 {
 	static Map<String, Integer> labels;
 	static int progCount = 0;
 	static List<ArrayList<String>> instrList;
+	//String cmd;
+    static Pipeline pipe = new Pipeline();
 
 	public static void main(String args[]){
 		Pipeline pipeline = new Pipeline(); //initialize pipeline

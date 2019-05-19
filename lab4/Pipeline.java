@@ -12,15 +12,17 @@ public class Pipeline {
    	PipelineRegister exe_mem;
    	PipelineRegister mem_wb;
 
+    int cycleCount = 0; //Cycle Count used for CPI
+
     // dummy constructor
     public Pipeline() {
-		if_id = new PipelineRegister("empty");
-   		id_exe = new PipelineRegister("empty");
-   		exe_mem = new PipelineRegister("empty");
-		mem_wb = new PipelineRegister("empty");
+		if_id = new PipelineRegister("empty");  //initialize an empty if_id register
+   		id_exe = new PipelineRegister("empty"); //initialize an empty id_exe register
+   		exe_mem = new PipelineRegister("empty"); //initialize an empty exe_mem register
+		mem_wb = new PipelineRegister("empty"); //initialize an empty mem_wb register
     }
 
-	//Prints Pipeline register's values in format:
+	//Prints Pipeline register's values in the format:
 	//pc	if/id	id/exe	exe/mem	mem/wb
     public void printPipeRegs(){
     	System.out.println("\npc\tif/id\tid/exe\texe/mem\tmem/wb");
@@ -30,46 +32,77 @@ public class Pipeline {
     }
 
     public void simulate_cpu_cycle() {
-        ArrayList<String> instr = new ArrayList<String>();
-
-        writeBack();
-        memory();
-        execute();
-        decode(instr);
-        instr = fetch();
-        //instr = fetch();
+        writeBack(); //updates the Count and CPI
+        memory(); //moves instrName and Instr down the pipleine
+        execute(); //executes branch instructions and moves instrName and Instr down the pipleine
+        decode(); //executes non branch instructions and moves instrName and Instr down the pipleine
+        fetch(); //gets a new instruction using PC and moves it into if_id 
     }
 
     public void writeBack() {
-
+        //update count and CPI
+        cycleCount++;
     }
 
     public void memory() {
-
+        //move instrName and Instr down the pipleine
+        mem_wb.setInstrName(exe_mem.getInstrName());  //move InstrName from exe_mem to mem_wb
+        mem_wb.setInstr(exe_mem.getInstr());  //move Instr from exe_mem to mem_wb
     }
 
     public void execute() {
-
+        //move instrName and Instr down the pipleine
+        exe_mem.setInstrName(id_exe.getInstrName());  //move InstrName from id_exe to exe_mem
+        exe_mem.setInstr(id_exe.getInstr());  //move Instr from id_exe to exe_mem
     }
 
-    public void decode(ArrayList<String> currInstruct) {
-        if (currInstruct.isEmpty()) {
-            return;
+    //public void decode(ArrayList<String> currInstruct) {
+    public void decode() {
+        //if (currInstruct.isEmpty()) {
+        //    return;
+        //}
+
+        String currInstr = id_exe.getInstrName(); //get id_exe InstrName
+
+        //use for debugging
+        System.out.println(currInstr);
+
+        //only run valid instructions that aren't beq and bne
+        //need to try running beq and bne instructions later on (in execute?)
+        if(!currInstr.equals("empty") && !currInstr.equals("squash")
+            && !currInstr.equals("beq") && !currInstr.equals("bne")){
+            cmd.execInstruction(id_exe.getInstr()); //run instruction
+            System.out.println(id_exe.getInstr());  //print the instruction that was run
+        } else
+        {
+            System.out.println("instruction not run.");
         }
-        cmd.execInstruction(currInstruct);
-        //System.out.println(currInstruct.get(0));
 
+        //If we just ran a jump, squash the if_id register
+        if(currInstr.equals("jal") || currInstr.equals("jr") 
+            || currInstr.equals("j")){
+            if_id.setInstrName("squash"); //squash the if_id InstrName
+        }
+        //System.out.println(currInstruct.get(0));
+        //System.out.println(lab4.progCount);
+
+        //move instrName and Instr down the pipleine
+        id_exe.setInstrName(if_id.getInstrName()); //move Instrname from if_id to id_exe
+        id_exe.setInstr(if_id.getInstr());  //move Instr from if_id to id_exe
     }
 
-    public ArrayList<String> fetch() {
+    public void fetch() {
         // check PC for line number to grab that instruction
         // grab instruction from List
         // update pipeline output
 
         ArrayList<String> currInstruct = lab4.instrList.get(lab4.progCount);
-        if_id.setInstrName(currInstruct.get(0));
 
-        return currInstruct;
+        //place instrName and Instr into the pipleine
+        if_id.setInstrName(currInstruct.get(0)); //put InstrName to if_id
+        if_id.setInstr(currInstruct);  //put Instr to if_id
+
+        //return currInstruct;
     }
 
 }

@@ -5,13 +5,7 @@ public class PipelineRegister {
 
     //Instruction Data
    	private String instrName;  	//name of instruction
-    private String rd;         	//rd register
-    private String rs;			//rs register
-    private String rt;			//rt register
-    private int immed;			//used for addi
-    private int h;				//used for sll as value to shift by
-    private int target;			//used for jump instrs
-    private int offset;			//used branch and load/store instrs
+    ArrayList<String> instr;    //full instruction
 
     // constructor used to start pipeline registers as "empty"
     public PipelineRegister(String instrName) {
@@ -23,65 +17,17 @@ public class PipelineRegister {
     	return instrName;
     }
 
-    public String getRD(){
-    	return rd;
-    }
-
-    public String getRS(){
-    	return rs;
-    }
-
-    public String getRT(){
-    	return rt;
-    }
-
-    public int getImmed(){
-    	return immed;
-    }
-
-    public int getH(){
-    	return h;
-    }
-
-    public int getTarget(){
-    	return target;
-    }
-
-    public int getOffset(){
-    	return offset;
+    public ArrayList<String> getInstr(){
+        return instr;
     }
 
     //Setter code for variables-------------------
-    public void setInstrName(String instrName){
+    public void setInstrName(String instrName){    //store instruction name
     	this.instrName = instrName;
     }
 
-    public void setRD(String rd){
-    	this.rd = rd;
-    }
-
-    public void setRS(String rs){
-    	this.rs = rs;
-    }
-
-    public void setRT(String rt){
-    	this.rt = rt;
-    }
-
-    public void setImmed(int immed){
-    	this.immed = immed;
-    }
-
-    public void setH(int h){
-    	this.h = h;
-    }
-
-    public void setTarget(int target){
-    	this.target = target;
-    }
-
-    public void setOffset(int offset){
-    	this.offset = offset;
+    public void setInstr(ArrayList<String> instr){ //store instruction array
+        this.instr = instr;
     }
 
     // needed to be able to print PipelineRegister to string

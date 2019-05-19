@@ -3,9 +3,6 @@ import java.util.ArrayList;
 
 public class Commands {
 
-    //String cmd;
-    Pipeline pipe = new Pipeline();
-
     // dummy constructor
     public Commands() {}
 
@@ -64,12 +61,14 @@ public class Commands {
             executed = true;
             //currInstruct = lab4.instrList.get(lab4.progCount);
             //execInstruction(currInstruct);
-            pipe.simulate_cpu_cycle();
+            lab4.pipe.simulate_cpu_cycle(); //run one piepline cycle
         }
 
         if(executed)
             System.out.println("\t" + stepCnt + " instruction(s) executed");
             //lab4.progCount++;
+
+        lab4.pipe.printPipeRegs(); //print the pipeline registers
     }
 
     public static void displayDataMem(int startIdx, int endIdx){
