@@ -43,29 +43,41 @@ public class Commands {
     }
 
     public void run(){
-        ArrayList<String> currInstruct;
+        int numInstrExec = 0;
+        //Pipeline pl = new Pipeline();
+        //ArrayList<String> currInstruct;
         while (lab4.progCount != lab4.instrList.size()){
-            currInstruct = lab4.instrList.get(lab4.progCount);
-            execInstruction(currInstruct);
+            // currInstruct = lab4.instrList.get(lab4.progCount);
+            // execInstruction(currInstruct);
+            lab4.pipe.simulate_cpu_cycle();
+            numInstrExec += 1;
         }
+
+        // Program complete
+	    // CPI = 2.53	Cycles = 253	Instructions = 100
+        System.out.println("Program complete");
+        System.out.print("CPI = " + (Pipeline.cycleCount/numInstrExec)
+                            + "\tCycles = " + Pipeline.cycleCount + "\tInstructions = "
+                            + numInstrExec + "\n");
+                            // NOTE: num of instr execute must be from counter, not list size
     }
 
     public void step(String numSteps) {
         //pipe.simulate_cpu_cycle(numSteps);
         int stepCnt;
-        boolean executed = false;
+        //boolean executed = false;
         int steps = Integer.parseInt(numSteps);
 
         //ArrayList<String> currInstruct;
         for (stepCnt = 0; stepCnt < steps && lab4.progCount != lab4.instrList.size(); stepCnt++){
-            executed = true;
+            //executed = true;
             //currInstruct = lab4.instrList.get(lab4.progCount);
             //execInstruction(currInstruct);
             lab4.pipe.simulate_cpu_cycle(); //run one piepline cycle
         }
 
-        if(executed)
-            System.out.println("\t" + stepCnt + " instruction(s) executed");
+        //if(executed)
+            //System.out.println("\t" + stepCnt + " instruction(s) executed");
             //lab4.progCount++;
 
         lab4.pipe.printPipeRegs(); //print the pipeline registers
@@ -102,6 +114,7 @@ public class Commands {
         String rd, rs, rt;         //String values for register
         int rd_val,rs_val, rt_val; //decimal value for register
         int immed, h, target, offset;
+
         String command = instr.get(0); //get the operation we are trying to run
         switch(command){
             case "and":
@@ -218,8 +231,9 @@ public class Commands {
                 if(rs_val == rt_val){
                     //calculate target
                     offset = immed - (lab4.progCount + 1); //NOTE Need to make static variable lab4.progCount
+                    lab4.incrementPC = false;
                     lab4.progCount += offset;//jump to target
-                    //increment = false;
+                    Pipeline.taken = 1;
                 }
                 break;
             case "bne":
@@ -234,8 +248,8 @@ public class Commands {
                 if(rs_val != rt_val){
                     //calculate target
                     offset = immed - (lab4.progCount + 1); //NOTE Need to make static variable lab4.progCount
+                    lab4.incrementPC = false;
                     lab4.progCount += offset;//jump to target
-                    //increment = false;
                 }
                 break;
             case "lw":

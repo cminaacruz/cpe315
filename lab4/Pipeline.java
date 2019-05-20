@@ -12,7 +12,9 @@ public class Pipeline {
    	PipelineRegister exe_mem;
    	PipelineRegister mem_wb;
 
-    int cycleCount = 0; //Cycle Count used for CPI
+    static int cycleCount = 0; //Cycle Count used for CPI
+    static int taken = 0; // default not taken (0)
+    int jump;
 
     // dummy constructor
     public Pipeline() {
@@ -33,10 +35,10 @@ public class Pipeline {
 
     public void simulate_cpu_cycle() {
         writeBack(); //updates the Count and CPI
-        memory(); //moves instrName and Instr down the pipleine
-        execute(); //executes branch instructions and moves instrName and Instr down the pipleine
-        decode(); //executes non branch instructions and moves instrName and Instr down the pipleine
-        fetch(); //gets a new instruction using PC and moves it into if_id 
+        memory(); //moves instrName and Instr down the pipeline
+        execute(); //executes branch instructions and moves instrName and Instr down the pipeline
+        decode(); //executes non branch instructions and moves instrName and Instr down the pipeline
+        fetch(); //gets a new instruction using PC and moves it into if_id
     }
 
     public void writeBack() {
@@ -51,31 +53,33 @@ public class Pipeline {
     }
 
     public void execute() {
+        ArrayList<String> currInstruct = lab4.instrList.get(lab4.progCount);
+        String currInstrName = currInstruct.get(0);
         //move instrName and Instr down the pipleine
         exe_mem.setInstrName(id_exe.getInstrName());  //move InstrName from id_exe to exe_mem
         exe_mem.setInstr(id_exe.getInstr());  //move Instr from id_exe to exe_mem
+
+        if(currInstrName.equals("beq") || currInstrName.equals("bne")) {
+            cmd.execInstruction(currInstruct);
+        }
+
     }
 
-    //public void decode(ArrayList<String> currInstruct) {
     public void decode() {
-        //if (currInstruct.isEmpty()) {
-        //    return;
-        //}
-
+        jump = 0;
         String currInstr = id_exe.getInstrName(); //get id_exe InstrName
 
         //use for debugging
-        System.out.println(currInstr);
+        //System.out.println(currInstr);
 
         //If we just ran a jump, squash the if_id register
-        if(currInstr.equals("jal") || currInstr.equals("jr") 
+        if(currInstr.equals("jal") || currInstr.equals("jr")
             || currInstr.equals("j")){
-            if_id.setInstrName("squash"); //squash the if_id InstrName
+            jump = 1;
+            System.out.println("decode: " + currInstr);
         }
-        //System.out.println(currInstruct.get(0));
-        //System.out.println(lab4.progCount);
 
-        //move instrName and Instr down the pipleine
+        //move instrName and Instr down the pipeline
         id_exe.setInstrName(if_id.getInstrName()); //move Instrname from if_id to id_exe
         id_exe.setInstr(if_id.getInstr());  //move Instr from if_id to id_exe
     }
@@ -88,26 +92,29 @@ public class Pipeline {
         // Increments PC unless a branch, jump, or stall has just gone off
 
         ArrayList<String> currInstruct = lab4.instrList.get(lab4.progCount);
-        String currInstrName = currInstruct.get(0);
+        String currInstrName;
 
-        //place instrName and Instr into the pipleine
-        if_id.setInstrName(currInstrName); //put InstrName to if_id
-        if_id.setInstr(currInstruct);  //put Instr to if_id
+        //place instrName and Instr into the pipeline
+        if (jump == 1) {
+            if_id.setInstrName("squash"); //squash the if_id InstrName
+            currInstruct = lab4.instrList.get(lab4.progCount + 1);
+            currInstrName = currInstruct.get(0);
+            System.out.println("fetch: " + currInstrName);
+        } else {
+            currInstrName = currInstruct.get(0);
+            if_id.setInstrName(currInstrName); //put InstrName to if_id
+            if_id.setInstr(currInstruct);  //put Instr to if_id
+        }
 
         //only run valid instructions that aren't branches or jumps
         //need to try running beq and bne instructions later on (in execute?)
         if(!currInstrName.equals("jal") && !currInstrName.equals("j") && !currInstrName.equals("jr")
             && !currInstrName.equals("beq") && !currInstrName.equals("bne")){
             cmd.execInstruction(currInstruct); //run instruction
-            System.out.println(currInstruct);  //print the instruction that was run
-        } else //if we hit a jump or branch
-        {
-            System.out.println("instruction not run.");
         }
 
         if(lab4.incrementPC) //global flag checking if PC should be incremented
             lab4.progCount++;
-        //return currInstruct;
     }
 
 }
