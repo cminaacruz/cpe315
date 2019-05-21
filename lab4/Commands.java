@@ -43,23 +43,29 @@ public class Commands {
     }
 
     public void run(){
-        int numInstrExec = 0;
+        float cpi;
+        //int numInstrExec = 0;
         //Pipeline pl = new Pipeline();
         //ArrayList<String> currInstruct;
-        while (lab4.progCount != lab4.instrList.size()){
+        while (!lab4.pipe.isEmpty()){
             // currInstruct = lab4.instrList.get(lab4.progCount);
             // execInstruction(currInstruct);
             lab4.pipe.simulate_cpu_cycle();
-            numInstrExec += 1;
+            //step("1");
+            //numInstrExec += 1;
+            //Pipeline.numInstrExec++; //update number of instructions
+            //System.out.println(numInstrExec);
         }
 
         // Program complete
 	    // CPI = 2.53	Cycles = 253	Instructions = 100
         System.out.println("Program complete");
-        System.out.print("CPI = " + (Pipeline.cycleCount/numInstrExec)
-                            + "\tCycles = " + Pipeline.cycleCount + "\tInstructions = "
-                            + numInstrExec + "\n");
+        cpi = (float)Pipeline.cycleCount/(float)Pipeline.numInstrExec;
+        System.out.printf("%.3f", cpi);
+        System.out.print(" Cycles = " + Pipeline.cycleCount + " Instructions = "
+                            + Pipeline.numInstrExec + "\n");
                             // NOTE: num of instr execute must be from counter, not list size
+        
     }
 
     public void step(String numSteps) {
@@ -69,11 +75,12 @@ public class Commands {
         int steps = Integer.parseInt(numSteps);
 
         //ArrayList<String> currInstruct;
-        for (stepCnt = 0; stepCnt < steps && lab4.progCount != lab4.instrList.size(); stepCnt++){
+        for (stepCnt = 0; stepCnt < steps; stepCnt++){
             //executed = true;
             //currInstruct = lab4.instrList.get(lab4.progCount);
             //execInstruction(currInstruct);
-            lab4.pipe.simulate_cpu_cycle(); //run one piepline cycle
+            if(!lab4.pipe.isEmpty())
+                lab4.pipe.simulate_cpu_cycle(); //run one piepline cycle
         }
 
         //if(executed)
@@ -83,7 +90,7 @@ public class Commands {
         lab4.pipe.printPipeRegs(); //print the pipeline registers
     }
 
-    public static void displayDataMem(int startIdx, int endIdx){
+    public void displayDataMem(int startIdx, int endIdx){
         System.out.print("\n");
         for (int idx = startIdx; idx <= endIdx; idx++){
             System.out.println("[" + idx + "] = " + lab4.dataMemory[idx]);
@@ -91,7 +98,7 @@ public class Commands {
         System.out.print("\n");
     }
 
-    public static void clear(Map<String, Integer> registers, int[] dataMemory) {
+    public void clear(Map<String, Integer> registers, int[] dataMemory) {
         // clears register map
         for (String key : registers.keySet()) {
             registers.put(key, 0);
@@ -231,9 +238,10 @@ public class Commands {
                 if(rs_val == rt_val){
                     //calculate target
                     offset = immed - (lab4.progCount + 1); //NOTE Need to make static variable lab4.progCount
-                    lab4.incrementPC = false;
-                    lab4.progCount += offset;//jump to target
-                    Pipeline.taken = 1;
+                    //lab4.incrementPC = false;
+                    Pipeline.brOffset = offset + lab4.progCount;
+                    //lab4.progCount += offset;//jump to target
+                    Pipeline.taken = true;
                 }
                 break;
             case "bne":
@@ -248,8 +256,10 @@ public class Commands {
                 if(rs_val != rt_val){
                     //calculate target
                     offset = immed - (lab4.progCount + 1); //NOTE Need to make static variable lab4.progCount
-                    lab4.incrementPC = false;
-                    lab4.progCount += offset;//jump to target
+                    //lab4.incrementPC = false;
+                    Pipeline.brOffset = offset + lab4.progCount;
+                    //lab4.progCount += offset;//jump to target
+                    Pipeline.taken = true;
                 }
                 break;
             case "lw":
@@ -295,7 +305,7 @@ public class Commands {
                 //load jump target value from hashmap
                 target = lab4.labels.get(instr.get(1).toString()) - 1;
                 //store current PC value into $ra in hashmap
-                regPut("ra", lab4.progCount + 1);
+                regPut("ra", lab4.progCount);
                 //jump to target
                 lab4.progCount = target;
                 ////increment = false;
