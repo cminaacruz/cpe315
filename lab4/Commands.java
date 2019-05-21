@@ -59,10 +59,10 @@ public class Commands {
 
         // Program complete
 	    // CPI = 2.53	Cycles = 253	Instructions = 100
-        System.out.println("Program complete");
+        System.out.println("\nProgram complete");
         cpi = (float)Pipeline.cycleCount/(float)Pipeline.numInstrExec;
-        System.out.printf("%.3f", cpi);
-        System.out.print(" Cycles = " + Pipeline.cycleCount + " Instructions = "
+        System.out.printf("CPI = %.3f", cpi);
+        System.out.println(" Cycles = " + Pipeline.cycleCount + " Instructions = "
                             + Pipeline.numInstrExec + "\n");
                             // NOTE: num of instr execute must be from counter, not list size
         
