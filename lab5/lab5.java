@@ -1,12 +1,12 @@
 import java.util.*;
 import java.io.*;
 /*
-	Authors     : Gonzalo Arana, Carmina Cruz
-	File        : Lab3.java
+	Authors     : Carmina Cruz, Gonzalo Arana
+	File        : Lab5.java
 	Description : A Command Line Interface for processing MIPS assembly (.asm) files.
 */
 
-public class lab3 {
+public class lab5 {
 
 	static Map<String, Integer> registers = setRegisters();
 	static int[] dataMemory = setDataMemory();

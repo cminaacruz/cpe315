@@ -26,7 +26,7 @@ public class Commands {
 
         // prints out registers
         int count = 0;
-        System.out.println("\n" + reg[0] + " = " + lab3.progCount);
+        System.out.println("\n" + reg[0] + " = " + lab5.progCount);
         for (int r = 1; r < reg.length; r++) {
             Integer value = registers.get(reg[r]);
             if ((count != 0) && (count % 4) == 0) {
@@ -45,8 +45,8 @@ public class Commands {
 
     public void run(){
         ArrayList<String> currInstruct;
-        while (lab3.progCount != lab3.instrList.size()){
-            currInstruct = lab3.instrList.get(lab3.progCount);
+        while (lab5.progCount != lab5.instrList.size()){
+            currInstruct = lab5.instrList.get(lab5.progCount);
             execInstruction(currInstruct);
         }
     }
@@ -55,9 +55,9 @@ public class Commands {
         boolean executed = false;
         int steps = Integer.parseInt(numSteps);
         ArrayList<String> currInstruct;
-        for (stepCnt = 0; stepCnt < steps && lab3.progCount != lab3.instrList.size(); stepCnt++){
+        for (stepCnt = 0; stepCnt < steps && lab5.progCount != lab5.instrList.size(); stepCnt++){
             executed = true;
-            currInstruct = lab3.instrList.get(lab3.progCount);
+            currInstruct = lab5.instrList.get(lab5.progCount);
             execInstruction(currInstruct);
         }
         if(executed)
@@ -67,7 +67,7 @@ public class Commands {
     public static void displayDataMem(int startIdx, int endIdx){
         System.out.print("\n");
         for (int idx = startIdx; idx <= endIdx; idx++){
-            System.out.println("[" + idx + "] = " + lab3.dataMemory[idx]);
+            System.out.println("[" + idx + "] = " + lab5.dataMemory[idx]);
         }
         System.out.print("\n");
     }
@@ -83,7 +83,7 @@ public class Commands {
             dataMemory[i] = 0;
         }
 
-        lab3.progCount = 0;
+        lab5.progCount = 0;
 
         System.out.println("\tSimulator reset\n");
     }
@@ -203,15 +203,15 @@ public class Commands {
                 //save register values from instruction
                 rs = instr.get(1).toString();
                 rt = instr.get(2).toString();
-                immed = lab3.labels.get(instr.get(3).toString());
+                immed = lab5.labels.get(instr.get(3).toString());
                 //load register values from hashmap
                 rs_val = regGet(rs);
                 rt_val = regGet(rt);
                 //perform BEQ: if $s == $t
                 if(rs_val == rt_val){
                     //calculate target
-                    offset = immed - (lab3.progCount + 1); //NOTE Need to make static variable lab3.progCount
-                    lab3.progCount += offset;//jump to target
+                    offset = immed - (lab5.progCount + 1); //NOTE Need to make static variable lab5.progCount
+                    lab5.progCount += offset;//jump to target
                     increment = false;
                 }
                 break;
@@ -219,15 +219,15 @@ public class Commands {
                 //save register values from instruction
                 rs = instr.get(1).toString();
                 rt = instr.get(2).toString();
-                immed = lab3.labels.get(instr.get(3).toString());
+                immed = lab5.labels.get(instr.get(3).toString());
                 //load register values from hashmap
                 rs_val = regGet(rs);
                 rt_val = regGet(rt);
                 //perform BEQ: if $s != $t
                 if(rs_val != rt_val){
                     //calculate target
-                    offset = immed - (lab3.progCount + 1); //NOTE Need to make static variable lab3.progCount
-                    lab3.progCount += offset;//jump to target
+                    offset = immed - (lab5.progCount + 1); //NOTE Need to make static variable lab5.progCount
+                    lab5.progCount += offset;//jump to target
                     increment = false;
                 }
                 break;
@@ -239,7 +239,7 @@ public class Commands {
                 //load register values from hashmap
                 rs_val = regGet(rs);
                 //load value from memory MEM[$s + immed]
-                rt_val = lab3.dataMemory[rs_val + immed];
+                rt_val = lab5.dataMemory[rs_val + immed];
                 //store value into $t
                 regPut(rt, rt_val);
                 break;
@@ -252,13 +252,13 @@ public class Commands {
                 rt_val = regGet(rt);
                 rs_val = regGet(rs);
                 //store $t value into memory MEM[$s + immed]
-                lab3.dataMemory[rs_val + immed] = rt_val;   
+                lab5.dataMemory[rs_val + immed] = rt_val;
                 break;
             case "j":
                 //load jump target value from hashmap
-                target = lab3.labels.get(instr.get(1).toString()) - 1;
+                target = lab5.labels.get(instr.get(1).toString()) - 1;
                 //jump to target
-                lab3.progCount = target;
+                lab5.progCount = target;
                 increment = false;
                 break;
             case "jr":
@@ -267,35 +267,35 @@ public class Commands {
                 //load register values from hashmap
                 rs_val = regGet(rs);
                 //jump to value from register
-                lab3.progCount = rs_val;
+                lab5.progCount = rs_val;
                 increment = false;
                 break;
             case "jal":
                 //load jump target value from hashmap
-                target = lab3.labels.get(instr.get(1).toString()) - 1;
+                target = lab5.labels.get(instr.get(1).toString()) - 1;
                 //store current PC value into $ra in hashmap
-                regPut("ra", lab3.progCount + 1);
+                regPut("ra", lab5.progCount + 1);
                 //jump to target
-                lab3.progCount = target;
+                lab5.progCount = target;
                 increment = false;
                 break;
             default:
                 System.out.println("invalid instruction: " + instr.get(0).toString());
                 return;
-        } 
+        }
         if(increment)
-            lab3.progCount++;      
+            lab5.progCount++;
     }
 
     public static void regPut(String dest, int value){
         if(dest == "zero")
             dest = "0";
-        lab3.registers.put(dest, value);
+        lab5.registers.put(dest, value);
     }
 
     public static int regGet(String source){
         if(source == "zero")
             source = "0";
-        return lab3.registers.get(source);
+        return lab5.registers.get(source);
     }
 }
