@@ -1,5 +1,7 @@
 import java.util.Map;
 import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Commands {
 
@@ -53,6 +55,30 @@ public class Commands {
             execInstruction(currInstruct);
         }
     }
+
+    public void output() throws IOException{
+        String pointFile = "coordinates.csv";
+        FileWriter csvWriter = new FileWriter(pointFile);
+
+        boolean printingX = true;
+
+        
+            for (int idx = 0; idx <= 667; idx++){
+                //System.out.println(lab5.dataMemory[idx]);
+                //System.out.println("IDX: " + idx);
+                csvWriter.write(String.valueOf(lab5.dataMemory[idx]));
+                if(printingX){
+                    csvWriter.write(",");
+                    printingX = false;
+                }
+                else{
+                    csvWriter.write("\n");
+                    printingX = true;
+                }
+            }
+            csvWriter.close();
+    }
+
     public void step(String numSteps) {
         int stepCnt;
         boolean executed = false;

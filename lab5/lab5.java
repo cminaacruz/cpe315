@@ -112,6 +112,11 @@ public class lab5 {
 				cmd.displayDataMem(Integer.parseInt(inpArr[1]), Integer.parseInt(inpArr[2]));
 				break;
 			case "o":
+				try{
+				cmd.output();
+				} catch (IOException e){
+					System.out.println("ERROR WRITING TO CSV");
+				}
 				break;
 			case "b":
 				bp.printAccuracy();
