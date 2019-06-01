@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Commands {
 
     String cmd;
+    static int bneReach = 0;
 
     // dummy constructor
     public Commands() {}
@@ -16,7 +17,9 @@ public class Commands {
         System.out.println("r = run until the program ends");
         System.out.println("m num1 num2 = display data memory from location num1 to num2");
         System.out.println("c = clear all registers, memory, and the program counter to 0");
-        System.out.println("q = exit the program\n");
+        System.out.println("q = exit the program");
+        System.out.println("o = output a comma separated listing of the x,y coordinates to a file");
+        System.out.println("b = output the branch predictor accuracy\n");
     }
 
     public void dump(Map<String, Integer> registers) {
@@ -96,6 +99,9 @@ public class Commands {
         int rd_val,rs_val, rt_val; //decimal value for register
         int immed, h, target, offset;
         String command = instr.get(0); //get the operation we are trying to run
+        branchPredictor bp = new branchPredictor();
+        bp.ifTaken = false;
+
         switch(command){
             case "and":
                 //save register values from instruction
@@ -213,7 +219,10 @@ public class Commands {
                     offset = immed - (lab5.progCount + 1); //NOTE Need to make static variable lab5.progCount
                     lab5.progCount += offset;//jump to target
                     increment = false;
+                    bp.ifTaken = true;
                 }
+                bp.totalPredict += 1;
+                bp.doPrediction(bp.ifTaken);
                 break;
             case "bne":
                 //save register values from instruction
@@ -229,7 +238,12 @@ public class Commands {
                     offset = immed - (lab5.progCount + 1); //NOTE Need to make static variable lab5.progCount
                     lab5.progCount += offset;//jump to target
                     increment = false;
+                    bp.ifTaken = true;
+                    //bneReach += 1;
                 }
+                bp.totalPredict += 1;
+                bp.doPrediction(bp.ifTaken);
+
                 break;
             case "lw":
                 //save register values from instruction

@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 /*
 	Authors     : Carmina Cruz, Gonzalo Arana
 	File        : Lab5.java
@@ -15,6 +16,7 @@ public class lab5 {
 	static List<ArrayList<String>> instrList;
 
 	public static void main(String args[]){
+		branchPredictor bp = new branchPredictor();
 		boolean exitFlag = true;
 
 		labels = getLabels(args[0]);
@@ -35,6 +37,15 @@ public class lab5 {
 		}
 		// script mode
 		else {
+			//int bits;
+			if (args.length == 3) {
+				bp.ghrSize = Integer.parseInt(args[args.length-1]);
+				bp.initializeGHR(bp.ghrSize);
+			}
+			else {
+				bp.ghrSize = 2;
+				bp.initializeGHR(bp.ghrSize);
+			}
 		    Scanner buffer;
 		    List<String> script = new ArrayList<String>();
 
@@ -78,6 +89,7 @@ public class lab5 {
 
 	public static boolean cmdExec(String[] inpArr, boolean exit) {
 		Commands cmd = new Commands();
+		branchPredictor bp = new branchPredictor();
 
 		//check the zero index for the type of command
 		switch(inpArr[0]){
@@ -98,6 +110,11 @@ public class lab5 {
 				break;
 			case "m":
 				cmd.displayDataMem(Integer.parseInt(inpArr[1]), Integer.parseInt(inpArr[2]));
+				break;
+			case "o":
+				break;
+			case "b":
+				bp.printAccuracy();
 				break;
 			case "c":
 				cmd.clear(registers, dataMemory);
