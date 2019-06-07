@@ -60,8 +60,7 @@ public class lab6 {
         directMappedCache(7, addresses, (4 * KB), 1);
     }
 
-    static void printCache(int cacheNum, int cacheSize, int associativity,
-                            int blockSize, int numHits, double hitRate) {
+    static void printCache(int cacheNum, int cacheSize, int associativity, int blockSize, int numHits, double hitRate) {
         System.out.println("Cache #" + cacheNum);
         System.out.print("Cache size: " + cacheSize + "B\t");
         System.out.print("Associativity: " + associativity);
@@ -77,6 +76,7 @@ public class lab6 {
 
         // multiply wordBlocks by 4 because it's byte-addressable
         int idxSize = (cacheSize) / (wordBlocks * 4);
+        int blockOffset = idxSize % wordBlocks;
 
         // initialize cache
         int[][] cache = new int[idxSize][1];
@@ -90,8 +90,8 @@ public class lab6 {
             int idx = intAddress % idxSize;
 
             // if the current index is empty, put address in; else, increase hit count
-            if (cache[idx][0] != intAddress) {
-                cache[idx][0] = intAddress;
+            if (cache[idx][blockOffset] != intAddress) {
+                cache[idx][blockOffset] = intAddress;
             } else {
                 hits += 1;
             }
